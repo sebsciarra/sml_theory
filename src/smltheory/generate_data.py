@@ -31,13 +31,13 @@ def compute_rescaling_factor(new_upper_limit=10, new_lower_limit=1):
 
 
 def rescale_outcome_variable(data, new_lower_limit=1, new_upper_limit=10):
-    #scale outcome variable to a 1--10 scale
+    # scale outcome variable to a 1--10 scale
     '''old_lower_limit: assume smallest scores for features with positive weights and largest scores for
     features with negative weights'''
     '''old_upper_limit: assume largest scores for features with positive weights and smallest scores for 
     features with negative weights'''
-    ##assume highest/lowest possible error scores are +-4 SDs
-    ##reminder: population function = ax + by + cx^2 + dy^2 + e(xy) + error
+    # assume highest/lowest possible error scores are +-4 SDs
+    # reminder: population function = ax + by + cx^2 + dy^2 + e(xy) + error
     old_lower_limit = np.dot(a=provide_weights(), b=np.array([1, 10, 1, 100, 10])) - 3 * 1.5
     old_upper_limit = np.dot(a=provide_weights(), b=np.array([10, 10, 100, 100, 100])) + 3 * 1.5
 
