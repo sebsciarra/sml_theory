@@ -248,7 +248,7 @@ def compute_outcome_variable(data):
     >>> sample_size_gen_error = 150
     >>> sample_size_data_best_in_class = 1e4
     >>> data = generate_trunc_predictors(mu=mu, cov_matrix=cov_matrix,
-                                         sample_size=sample_size, seed=27)
+    ... sample_size=sample_size, seed=27)
     >>> compute_outcome_variable(data=data)
     """
 
