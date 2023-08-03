@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sml_theory"
+name = "smltheory"
 version = "0.1.0"
 description = "Demonstrates propositions of supervised machine learning theories"
 authors = ["Sebastian Sciarra"]
