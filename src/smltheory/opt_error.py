@@ -15,6 +15,12 @@ risk minimizer will be different from the sample risk minimizer (note that
 the optimization risk minimizer can have a generalization error that is larger or smaller
 than the sample risk minimizer. This module computes the generalization error of the optimization risk
 minimizer. For more details, see whitepaper at `sebastiansciarra.com <https://sebastiansciarra.com/technical_content/understanding_ML>`_.
+
+References
+----------
+[1] Bottou, L. & Bousquet, O. (2007). The tradeoffs of large scale learning. InKoller, S.
+(Eds.), Advances in neural information processing systems.
+(pp. 161–168). Curran Associates, Inc. `bit.ly/3qo1xpI <bit.ly/3qo1xpI>`_.
 """
 
 import numpy as np

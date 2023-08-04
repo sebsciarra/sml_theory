@@ -101,7 +101,7 @@ def gradient_descent(data, initial_weights, learning_rate=0.01, num_iterations=1
 
     Parameters
     ----------
-    data_gen_error: pandas.core.frame.DataFrame
+    data: pandas.core.frame.DataFrame
         Data set containing features (weather, winemaking quality) and outcome (wine quality).
 
     initial_weights:  numpy.ndarray

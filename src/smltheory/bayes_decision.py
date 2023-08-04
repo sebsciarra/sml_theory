@@ -1,3 +1,18 @@
+"""Computes generalization error of Bayes decision function.
+
+To provide context, Bayes decision function predicts wine quality using weather and
+winemaking quality such that
+
+:math:`\\begin{align}
+\\mathbf{y} &= \\mathbf{Xw}, \\text { where} \\\\
+\\mathbf{X} &= [\\mathbf{x}_1, \\mathbf{x}_2, \\mathbf{x}_1^2, \\mathbf{x}_2^2, \\mathbf{x}_1\\mathbf{x}_2], \\\\
+\\mathbf{w} &= [0.3 ,  0.1 ,  0.07, -0.1 ,  0.1].
+\\end{align}`
+
+For more details, see whitepaper at
+`sebastiansciarra.com <https://sebastiansciarra.com/technical_content/understanding_ML>`_.
+"""
+
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error
@@ -36,7 +51,6 @@ def generate_bayes_features(data):
      >>> data_gen_error = generate_data.generate_mult_trunc_normal(cov_matrix=cov_matrix, sd=sd,
                           mu=mu, sample_size=sample_size_gen_error)
      >>> compute_bayes_features(data=data_gen_error)
-
      """
 
     # Feature columns

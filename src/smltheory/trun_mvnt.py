@@ -1,4 +1,7 @@
+"""Generates multivariate normally distributed data.
 
+Module taken from `https://github.com/ralphma1203/trun_mvnt <https://github.com/ralphma1203/trun_mvnt>`_.
+"""
 import math
 import numpy as np
 
