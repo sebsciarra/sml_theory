@@ -71,12 +71,12 @@ def determine_best_polynomial_model(data_sample, data_gen_error,
     #generate data sets
     >>> data_best_in_class = generate_mult_trunc_normal(cov_matrix = cov_matrix, mu = mu,
     ... sample_size=sample_size_data_best_in_class, seed=7)
-    >>> data_gen_error = generate_mult_trunc_normal(cov_matrix=cov_matrix, sd=sd,
-    ... mu=mu, sample_size=sample_size_gen_error, seed = 22
+    >>> data_gen_error = generate_mult_trunc_normal(cov_matrix=cov_matrix, mu=mu,
+    ... sample_size=sample_size_gen_error, seed = 22
     >>> data_sample = data_best_in_class.sample(n=50, random_state=27)
     #determine best polynomial model
-    >>> best_model_poly_order = determine_best_polynomial_model(data_sample=data_sample,
-    ... data_gen_error=data_gen_error)
+    >>> determine_best_polynomial_model(data_sample=data_sample, data_gen_error=data_gen_error)
+    2
     """
     # Use random_state to ensure reproducibility and prevent resampling from adding noise to estimates
     df_all_emp_gen_errors = compute_all_emp_gen_errors(data_emp_loss=data_sample,
@@ -128,18 +128,19 @@ def compute_opt_gen_error(opt_weights, poly_order, data_gen_error):
     ... sample_size_data_best_in_class = 1e4
     #generate data sets
     >>> data_best_in_class = generate_mult_trunc_normal(cov_matrix = cov_matrix, mu = mu,
-    ... sample_size=best_in_class_sample_size, seed=7)
-    >>> data_gen_error = generate_mult_trunc_normal(cov_matrix=cov_matrix, sd=sd,
-    ... mu=mu, sample_size=sample_size_gen_error, seed = 22
-    >>> data_sample = data_best_in_class.sample(n=sample_size, random_state=27)
+    ... sample_size=sample_size_data_best_in_class, seed=7)
+    >>> data_gen_error = generate_mult_trunc_normal(cov_matrix=cov_matrix, mu=mu,
+    ... sample_size=sample_size_gen_error, seed = 22)
+    >>> data_sample = data_best_in_class.sample(n=50, random_state=27)
     #determine best polynomial model
     >>> best_model_poly_order = determine_best_polynomial_model(data_sample=data_sample,
     ... data_gen_error=data_gen_error)
     #set initial guess for regression weights
     >>> opt_weights = np.random.uniform(low=0, high=1, size=2 * best_model_poly_order)
     #compute generalization error of optimization risk minimizer
-    >>> compute_opt_gen_error(opt_weights=opt_weights, poly_order=poly_order,
+    >>> compute_opt_gen_error(opt_weights=opt_weights, poly_order=best_model_poly_order,
     ... data_gen_error=data_gen_error)
+    451.0819816097045
     """
     # gather necessary components for matrix-matrix multiplications
     dict_data = extract_feature_outcome_data(data=data_gen_error, poly_order=poly_order)
@@ -153,7 +154,7 @@ def compute_opt_gen_error(opt_weights, poly_order, data_gen_error):
     return gen_error
 
 
-def get_opt_risk_min(sample_size, data_best_in_class, data_gen_error, num_iterations=500):
+def get_opt_risk_min(sample_size, data_best_in_class, data_gen_error, num_iterations=100):
     """Computes generalization error of optimization risk minimizer.
 
     To obtain generalization error of optimization risk minimizer, two steps are followed:
@@ -200,18 +201,19 @@ def get_opt_risk_min(sample_size, data_best_in_class, data_gen_error, num_iterat
     ... sd = [1.2, 1.7]
     ... rho_weather_winemaking =  0.35
     #generate covariance matrix
-    >>> cov_matrix = generate_data.create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
+    >>> cov_matrix = create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
     #specify sample sizes for data sets
     >>> sample_size_gen_error = 150
     ... sample_size_data_best_in_class = 1e4
     #generate data sets
-    >>> data_best_in_class = generate_data.generate_mult_trunc_normal(cov_matrix = cov_matrix, mu = mu,
+    >>> data_best_in_class = generate_mult_trunc_normal(cov_matrix = cov_matrix, mu = mu,
     ... sample_size=best_in_class_sample_size, seed=7)
-    >>> data_gen_error = generate_data.generate_mult_trunc_normal(cov_matrix=cov_matrix, sd=sd,
-    ... mu=mu, sample_size=sample_size_gen_error, seed = 22
+    >>> data_gen_error = generate_mult_trunc_normal(cov_matrix=cov_matrix, mu=mu,
+    ... sample_size=sample_size_gen_error, seed = 22
     #compute generalization error of optimization risk minimizer
     >>> get_opt_risk_min(sample_size = 50, data_best_in_class=data_best_in_class, data_gen_error=data_gen_error,
     ... num_iterations=500)
+    0.34195817817471824
     """
     # Step 1: Using empirical risk minimization to determine the polynomial model order that results in the lowest
     # empirical loss
@@ -225,7 +227,7 @@ def get_opt_risk_min(sample_size, data_best_in_class, data_gen_error, num_iterat
     initial_weights = np.random.uniform(low=0, high=1, size=2 * best_model_poly_order)
 
     opt_weights = gradient_descent(data=data_sample, initial_weights=initial_weights,
-                                   num_iterations=num_iterations, return_log=False, learning_rate=5e-3,
+                                   num_iterations=num_iterations, return_log=False, learning_rate=0.005,
                                    poly_order=best_model_poly_order, expedite_algorithm=True)
 
     # Step 3: Use the number of columns in features data set to generate random guesses for regression

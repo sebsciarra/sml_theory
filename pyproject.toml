@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "smltheory"
-version = "0.1.0"
+version = "0.1.10"
 description = "Demonstrates propositions of supervised machine learning theories"
 authors = ["Sebastian Sciarra"]
 license = "MIT"
@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
-numpy = ">=1.25.2"
+numpy = "^1.24.0"
 pandas = ">=2.0.3"
 scipy = ">=1.11.1"
 

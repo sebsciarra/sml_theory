@@ -39,6 +39,7 @@ def generate_bayes_features(data):
 
      See Also
      --------
+     generate_data.create_covariance_matrix()
      generate_data.generate_mult_trunc_normal()
 
      Examples
@@ -46,11 +47,25 @@ def generate_bayes_features(data):
      >>> mu=[5, 7]
      >>> sd=[1.2, 1.7]
      >>> rho_weather_winemaking =  0.35
-     >>> cov_matrix=generate_data.create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
-     >>>sample_size_gen_error = 150
-     >>> data_gen_error = generate_data.generate_mult_trunc_normal(cov_matrix=cov_matrix, sd=sd,
-                          mu=mu, sample_size=sample_size_gen_error)
+     >>> cov_matrix = create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
+     #generate data set
+     >>> sample_size_gen_error = 150
+     >>> data_gen_error = generate_mult_trunc_normal(cov_matrix=cov_matrix, mu=mu,
+     ... sample_size=sample_size_gen_error)
+     #compute features for Bayes decision function
      >>> compute_bayes_features(data=data_gen_error)
+          weather  winemaking_quality    weather  winemaking_quality          0
+     0    5.214258            6.655854  27.188488           44.300390  34.705340
+     1    5.459996            4.313195  29.811557           18.603650  23.550027
+     2    4.813125            8.830114  23.166172           77.970922  42.500444
+     3    5.499881            6.345226  30.248688           40.261895  34.897987
+     4    5.235549            8.265799  27.410970           68.323429  43.275991
+     ..        ...                 ...        ...                 ...        ...
+     145  6.020267            7.603160  36.243618           57.808035  45.773053
+     146  3.982080            7.635946  15.856965           58.307675  30.406952
+     147  5.654110            9.818515  31.968960           96.403227  55.514961
+     148  8.112048            6.618283  65.805322           43.801670  53.687829
+     149  3.384190            6.122903  11.452739           37.489943  20.721065
      """
 
     # Feature columns
@@ -87,11 +102,14 @@ def compute_bayes_intercept(data):
     >>> mu = [5, 7]
     >>> sd = [1.2, 1.7]
     >>> rho_weather_winemaking =  0.35
-    >>> cov_matrix = generate_data.create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
+    >>> cov_matrix = create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
+    #generate data set
     >>> sample_size_gen_error = 150
-    >>> data_gen_error = generate_data.generate_mult_trunc_normal(cov_matrix=cov_matrix, sd=sd,
-                         mu=mu, sample_size=sample_size_gen_error)
+    >>> data_gen_error = generate_mult_trunc_normal(cov_matrix=cov_matrix, mu=mu,
+    ... sample_size=sample_size_gen_error)
+    #compute intercept of Bayes decision function
     >>> compute_bayes_intercept(data=data_gen_error)
+    4.977118063990485
     """
 
     bayes_features = generate_bayes_features(data=data)
@@ -130,11 +148,13 @@ def compute_bayes_risk(data):
     >>> mu = [5, 7]
     >>> sd = [1.2, 1.7]
     >>> rho_weather_winemaking =  0.35
-    >>> cov_matrix = generate_data.create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
+    >>> cov_matrix = create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
+    #generate data
     >>> sample_size_gen_error = 150
-    >>> data_gen_error = generate_data.generate_mult_trunc_normal(cov_matrix=cov_matrix, sd=sd,
-                         mu=mu, sample_size=sample_size_gen_error)
+    >>> data_gen_error = generate_mult_trunc_normal(cov_matrix=cov_matrix, mu=mu,
+    ... sample_size=sample_size_gen_error)
     >>> compute_bayes_risk(data=data_gen_error)
+    0.25105984029122547
     """
 
     bayes_features = generate_bayes_features(data=data)

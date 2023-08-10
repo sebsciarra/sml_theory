@@ -1,6 +1,6 @@
-# sml_theory
+# smltheory
 
-Demonstrates propositions of supervised machine learning theories
+Demonstrates propositions of supervised machine learning theories.
 
 ## Installation
 
@@ -10,17 +10,13 @@ $ pip install smltheory
 
 ## Usage
 
-`sml_theory` can be used to demonstrate propositions of
+`smltheory` can be used to demonstrate propositions of
 supervised machine learning theories. Specifically, the functions
 demonstrate the propositions of excess risk decomposition
 and the bias-variance tradeoff. 
 
-```python
-#compute Bayes risk 
-
-
-
-```
+For a demonstration of each supervised machine learning proposition, see 
+[whitepaper](https://sebastiansciarra.com/technical_content/understanding_ML). 
 
 
 

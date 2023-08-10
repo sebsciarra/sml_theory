@@ -8,7 +8,8 @@ constrained empirical risk minimizer, :math:`f_\\mathcal{F}`) is unlikely to be 
 of the constrained empirical risk minimizer will result and will have a larger
 generalization error than the constrained empirical risk minimizer. I call this estimate
 the sample risk minimizer, :math:`\\hat{f}_s`. This module computes the generalization error of the optimization risk
-minimizer. For more details, see whitepaper at `sebastiansciarra.com <https://sebastiansciarra.com/technical_content/understanding_ML>`_.
+minimizer. For more details, see whitepaper at
+ `sebastiansciarra.com <https://sebastiansciarra.com/technical_content/understanding_ML>`_.
 
 References
 ----------
@@ -57,17 +58,18 @@ def compute_sample_risk_gen_error(sample_size, data_best_in_class, data_gen_erro
     >>> mu = [5, 7]
     >>> sd = [1.2, 1.7]
     >>> rho_weather_winemaking =  0.35
-    >>> cov_matrix = generate_data.create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
+    >>> cov_matrix = create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
     >>> sample_size_gen_error = 150
-    >>> sample_size_data_best_in_class = 1e4
-
-    >>> data_best_in_class = generate_data.generate_mult_trunc_normal(cov_matrix = cov_matrix, mu = mu,
-                             sample_size=best_in_class_sample_size, seed=7)
-    >>> data_gen_error = generate_data.generate_mult_trunc_normal(cov_matrix=cov_matrix, sd=sd,
-                         mu=mu, sample_size=sample_size_gen_error, seed = 22)
-    >>> compute_sample_risk_gen_error(sample_size=50,
-                                     data_best_in_class=data_best_in_class,
-                                     data_gen_error=data_gen_error)
+    >>> sample_size_data_best_in_class = 500
+    #generate data sets
+    >>> data_best_in_class = generate_mult_trunc_normal(cov_matrix = cov_matrix, mu = mu,
+    ... sample_size=sample_size_data_best_in_class, seed=7)
+    >>> data_gen_error = generate_mult_trunc_normal(cov_matrix=cov_matrix, mu=mu,
+    ... sample_size=sample_size_gen_error, seed = 21)
+    #compute generalization error of sample risk minimizer
+    >>> compute_sample_risk_gen_error(sample_size=50, data_best_in_class=data_best_in_class,
+    ... data_gen_error=data_gen_error)
+    0.22130558411285997
 """
     # Use random_state to ensure reproducibility and prevent resampling from adding noise to estimates
     gen_errors = compute_all_emp_gen_errors(data_emp_loss=data_best_in_class.sample(n=sample_size, random_state=27),

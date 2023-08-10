@@ -70,11 +70,11 @@ def compute_gradient(features, outcome, weights, num_samples):
     #generate covariance matrix
     >>> cov_matrix = create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
     #generate data
-    >>> data = generate_mult_trunc_normal(cov_matrix=cov_matrix, mu=mu,
+    >>> data = sml.generate_mult_trunc_normal(cov_matrix=cov_matrix, mu=mu,
     ... sample_size=150, seed=27)
     #extract features and outcome
-    >>> features = smltheory.least_squares.extract_feature_outcome_data(data=data)["features"]
-    ... outcome = smltheory.least_squares.extract_feature_outcome_data(data=data)["outcome"]
+    >>> features = least_squares.extract_feature_outcome_data(data=data)["features"]
+    ... outcome = least_squares.extract_feature_outcome_data(data=data)["outcome"]
     #compute gradient
     >>> weights = np.random.uniform(low = 0, high = 1, size = 4)
     >>> compute_gradient(features=features, outcome=outcome, weights=weights,
@@ -85,12 +85,13 @@ def compute_gradient(features, outcome, weights, num_samples):
     predictions = np.dot(features, weights)
 
     # Compute the error (difference between predictions and target, Xw - y)
-    residuals = outcome.ravel() - predictions
+    residuals = outcome - predictions
 
     # Compute the gradient of the cost function with respect to weights (2X(Xw - ))
     gradient = -2 * np.dot(features.T, residuals) / num_samples
 
     return gradient
+
 
 def gradient_descent(data, initial_weights, learning_rate=0.01, num_iterations=1000, poly_order=2,
                      epsilon=1e-20, expedite_algorithm=False, return_log=False):
@@ -208,13 +209,13 @@ def gradient_descent(data, initial_weights, learning_rate=0.01, num_iterations=1
 
     if return_log:
         # create dataframe
-        col_names = ["{}{}".format('w', str(weight_num)) for weight_num in range(1, len(all_weights) + 1)]
+        col_names = ["{}{}".format('w', str(weight_num)) for weight_num in range(1, all_weights.shape[1] + 1)]
         df_all_weights = pd.DataFrame(data=np.array(all_weights),
                                       columns=col_names)
-
         # insert iteration number
         df_all_weights.insert(0, "iteration_num", df_all_weights.index)
 
         return df_all_weights
+
     else:
         return weights

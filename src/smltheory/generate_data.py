@@ -33,6 +33,7 @@ def provide_weights():
     Examples
     --------
     >>> provide_weights()
+    array([ 0.3 ,  0.1 ,  0.07, -0.1 ,  0.1 ])
     """
 
     b_weight_weather = 0.3
@@ -64,6 +65,7 @@ def compute_old_scale_range():
     Examples
     --------
     >>> compute_old_scale_range()
+    27.63
     """
 
     # assume highest/lowest possible error scores are +-3 SDs
@@ -100,7 +102,8 @@ def compute_rescaling_factor(new_upper_limit=10, new_lower_limit=1):
 
     Examples
     --------
-    >>> compute_rescaling_factor(new_upper_limit=5, new_lower_limit=10)
+    >>> compute_rescaling_factor(new_upper_limit=10, new_lower_limit=5)
+    0.18096272167933405
     """
     old_scale_range = compute_old_scale_range()
     new_scale_range = new_upper_limit - new_lower_limit
@@ -148,7 +151,9 @@ def create_covariance_matrix(sd, rho):
     >>> sd = [1.2, 1.7]
     #population correlation between weather and winemaking quality
     >>> rho_weather_winemaking =  0.35
-    >>> cov_matrix = create_covariance_matrix(sd = sd, rho =  rho_weather_winemaking)
+    >>> create_covariance_matrix(sd = sd, rho =  rho_weather_winemaking)
+    array([[1.2  , 0.714],
+            [0.714, 1.7  ]])
     """
 
     # Create a lower triangular matrix with zeros
@@ -177,13 +182,21 @@ def generate_trunc_predictors(mu, cov_matrix, sample_size,
     ---------
     mu: pandas.core.frame.DataFrame
         Data set containing predictors (weather, winemaking quality) and outcome variable (wine quality).
+
     cov_matrix: int
         Upper limit of new scale.
+
     sample_size: int
-        New lower limit.
+        Sample size of for data set containing predictors.
+
     lower_limits: int
+        Lower limit of predictors.
+
     upper_limits: int
+        Upper limits of predictors.
+
     seed: int
+        Seed value for random number generator.
 
     Returns
     --------
@@ -192,7 +205,27 @@ def generate_trunc_predictors(mu, cov_matrix, sample_size,
 
     Examples
     --------
-    >>> compute_rescaling_factor(new_upper_limit=10, new_lower_limit=2)
+    >>> mu = [5, 7]
+    ... sd = [1.2, 1.7]
+    ... rho_weather_winemaking =  0.35
+    #generate covariance matrix
+    >>> cov_matrix = create_covariance_matrix(sd = sd, rho =  rho_weather_winemaking)
+    #genrate predictor data
+    generate_trunc_predictors(mu=mu, cov_matrix = cov_matrix, sample_size = 150)
+         weather  winemaking_quality
+    0    5.214258            6.655854
+    1    5.459996            4.313195
+    2    4.813125            8.830114
+    3    5.499881            6.345226
+    4    5.235549            8.265799
+    ..        ...                 ...
+    145  6.020267            7.603160
+    146  3.982080            7.635946
+    147  5.654110            9.818515
+    148  8.112048            6.618283
+    149  3.384190            6.122903
+
+    [150 rows x 2 columns]
     """
     # Upper and lower limits for variables
     lower_limits = np.repeat(lower_limits, len(mu))
@@ -244,12 +277,25 @@ def compute_outcome_variable(data):
     >>> mu = [5, 7]
     >>> sd = [1.2, 1.7]
     >>> rho_weather_winemaking =  0.35
-    >>> cov_matrix = generate_data.create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
-    >>> sample_size_gen_error = 150
-    >>> sample_size_data_best_in_class = 1e4
+    >>> cov_matrix = create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
+    #generate data and compute outcome variable
     >>> data = generate_trunc_predictors(mu=mu, cov_matrix=cov_matrix,
-    ... sample_size=sample_size, seed=27)
+    ... sample_size=150, seed=27)
     >>> compute_outcome_variable(data=data)
+              weather  winemaking_quality  wine_quality
+    0    5.214258            6.655854      4.496573
+    1    5.459996            4.313195      5.847665
+    2    4.813125            8.830114     -0.288320
+    3    5.499881            6.345226      0.672006
+    4    5.235549            8.265799     -0.912242
+    ..        ...                 ...           ...
+    145  6.020267            7.603160      4.538715
+    146  3.982080            7.635946      0.727746
+    147  5.654110            9.818515      0.327821
+    148  8.112048            6.618283      7.094816
+    149  3.384190            6.122903      0.930205
+
+    [150 rows x 3 columns]
     """
 
     feature_cols = pd.concat(objs=[data, data ** 2, data.prod(axis=1)], axis=1)
@@ -285,7 +331,29 @@ def rescale_outcome_variable(data, new_lower_limit=1, new_upper_limit=10):
 
     Examples
     --------
-    >>> compute_rescaling_factor(new_upper_limit=10, new_lower_limit=2)
+    >>> mu = [5, 7]
+    >>> sd = [1.2, 1.7]
+    >>> rho_weather_winemaking =  0.35
+    >>> cov_matrix = create_covariance_matrix(sd=sd, rho=rho_weather_winemaking)
+    #generate data and compute outcome variable
+    >>> data = generate_trunc_predictors(mu=mu, cov_matrix=cov_matrix,
+    ... sample_size=150, seed=27)
+    >>> data = compute_outcome_variable(data=data)
+    >>> rescale_outcome_variable(data=data)
+         weather  winemaking_quality  wine_quality
+    0    5.214258            6.655854      6.415822
+    1    5.459996            4.313195      6.855917
+    2    4.813125            8.830114      4.857225
+    3    5.499881            6.345226      5.170035
+    4    5.235549            8.265799      4.653993
+    ..        ...                 ...           ...
+    145  6.020267            7.603160      6.429549
+    146  3.982080            7.635946      5.188191
+    147  5.654110            9.818515      5.057922
+    148  8.112048            6.618283      7.262155
+    149  3.384190            6.122903      5.254139
+
+    [150 rows x 3 columns]
     """
     rescaling_factor = compute_rescaling_factor(new_upper_limit=new_upper_limit,
                                                 new_lower_limit=new_lower_limit)
@@ -302,8 +370,8 @@ def generate_mult_trunc_normal(cov_matrix, mu, sample_size, seed=27):
     """Generates multivariate normal truncated data.
 
     Data for features (weather, winemaking quality) and outcome (wine quality) are generated according
-    to truncated normal distrib utions. For more details,see `
-    sebastiansciarra.com <https://sebastiansciarra.com/technical_content/understanding_ML>`_.
+    to truncated normal distrib utions. For more details, see `sebastiansciarra.com
+    <https://sebastiansciarra.com/technical_content/understanding_ML>`_.
 
     Parameters
     ----------
@@ -326,7 +394,7 @@ def generate_mult_trunc_normal(cov_matrix, mu, sample_size, seed=27):
     --------
     generate_data.generate_trunc_predictors()
     generate_data.compute_outcome_variable()
-    generate_data.rescale_outcome_variable
+
     Examples
     --------
     >>> mu = [5, 7]
@@ -337,6 +405,18 @@ def generate_mult_trunc_normal(cov_matrix, mu, sample_size, seed=27):
     #specify sample sizes for data sets
     >>> generate_mult_trunc_normal(cov_matrix=cov_matrix, mu=mu,
     ... sample_size=150, seed=27)
+         weather  winemaking_quality  wine_quality
+    0    5.214258            6.655854      6.415822
+    1    5.459996            4.313195      6.855917
+    2    4.813125            8.830114      4.857225
+    3    5.499881            6.345226      5.170035
+    4    5.235549            8.265799      4.653993
+    ..        ...                 ...           ...
+    145  6.020267            7.603160      6.429549
+    146  3.982080            7.635946      5.188191
+    147  5.654110            9.818515      5.057922
+    148  8.112048            6.618283      7.262155
+    149  3.384190            6.122903      5.254139
     """
     # generate predictors
     data_mult_trunc_normal = generate_trunc_predictors(mu=mu, cov_matrix=cov_matrix,

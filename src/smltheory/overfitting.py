@@ -13,6 +13,7 @@ import statsmodels.formula.api as smf
 from sklearn.metrics import mean_squared_error
 from functools import partial
 import pandas as pd
+import numpy as np
 
 
 def gen_poly_reg_eq(poly_order, include_interactions=False):
@@ -35,6 +36,7 @@ def gen_poly_reg_eq(poly_order, include_interactions=False):
     >>> gen_poly_reg_eq(poly_order=2)
     'wine_quality ~ np.power(weather, 1) + np.power(weather, 2) + np.power(winemaking_quality, 1) + np.power(winemaking_quality, 2)'
     """
+
     # compute polynomial terms for predictors
     weather_pred = ' + '.join(['np.power(weather, {})'.format(ord_value) for ord_value in range(1, poly_order + 1)])
     winemaking_quality_pred = ' + '.join(['np.power(winemaking_quality, {})'.format(ord_value)
@@ -101,6 +103,7 @@ def compute_emp_gen_error(equation, data_emp_loss, data_gen_error):
     ... data_gen_error=data_gen_error)
     {'emp_loss': 0.2420572087052563, 'gen_error': 0.25353431587715874}
     """
+    import numpy as np
     model = smf.ols(data=data_emp_loss, formula=equation).fit()
     y_test = model.predict(data_gen_error)
 
@@ -151,7 +154,7 @@ def compute_all_emp_gen_errors(data_emp_loss, data_gen_error, poly_order_range, 
     >>> data_emp_loss = generate_mult_trunc_normal(cov_matrix = cov_matrix, mu = mu,
     ... sample_size = sample_size_emp_loss)
     >>> data_gen_error = generate_mult_trunc_normal(cov_matrix = cov_matrix, mu = mu,
-    ... sample_size = sample_size_gen_error)
+    ... sample_size = sample_size_gen_error, seed = 21)
     #compute empirical loss and generalization error for each polynomial model
     >>>  compute_all_emp_gen_errors(data_emp_loss = data_emp_loss,
     ... data_gen_error = data_gen_error, include_interactions = True,

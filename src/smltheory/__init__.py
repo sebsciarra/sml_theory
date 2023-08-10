@@ -3,7 +3,15 @@ from importlib.metadata import version
 
 __version__ = version("smltheory")
 
-#__all__ = ['bayes_decision', 'est_error', 'generate_data', 'gradient_descent',
-#           'least_squares', 'opt_error', 'overfitting']
-#
-#from smltheory import *
+from smltheory.generate_data import *
+from smltheory.overfitting import *
+from smltheory.opt_error import *
+from smltheory.est_error import *
+
+from smltheory.least_squares import *
+from smltheory.gradient_descent import *
+from smltheory.trun_mvnt import *
+from smltheory.bayes_decision import *
+
+from smltheory.datasets import *
+
